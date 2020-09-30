@@ -1,0 +1,5 @@
+.env
+src/vendor
+src/commands.sh
+.fuse*
+df_cache.pkl
