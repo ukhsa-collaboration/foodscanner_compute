@@ -22,7 +22,7 @@ function main(array $data)
             $objects[] = array(
                 'barcode' => $productBarcode,
                 'swap_barcode' => $swapBarcode,
-                'rank' => $newRank,
+                'Rank' => $newRank,
             );
         }
     }
@@ -35,7 +35,7 @@ function main(array $data)
 
             if ($result === 0)
             {
-                $result = $a['rank'] <=> $b['rank'];
+                $result = $a['Rank'] <=> $b['Rank'];
             }
 
             return $result;
@@ -54,9 +54,9 @@ function main(array $data)
                 $newRank = 1;
             }
 
-            $originalRank = $objects[$index]['rank'];
+            $originalRank = $objects[$index]['Rank'];
             //$objects[$index]['original_rank'] = $originalRank;
-            $objects[$index]['rank'] = $newRank;
+            $objects[$index]['Rank'] = $newRank;
 
             $newRank++;
             $lastBarcode = $object['barcode'];

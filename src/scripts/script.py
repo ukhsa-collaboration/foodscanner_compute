@@ -4,7 +4,7 @@ import pymysql
 import json
 import pandas
 import sys
-from phe_recommender.recommender import top_3_swaps, long_list_swaps, eligible_swaps
+from phe_recommender.recommender import top_3_swaps, top_100_swaps, long_list_swaps, eligible_swaps
 
 
 def main():
@@ -31,13 +31,8 @@ def swapsRoutineForBarcode(barcode, df):
     #barcode = '1000139000284'
 
     try:
-        output = eligible_swaps(barcode, df) # returns df of 30 top swaps
+        output = top_100_swaps(barcode, df)
         jsonObj = output.to_json(orient='records')
-
-        #for x in range(100):
-        #    output = long_list_swaps(barcode, df) # returns df of 30 top swaps
-        #    pprint(output)
-
         jsonObj2 = json.loads('{"barcode" : ' + barcode + ', "swaps" : ' + jsonObj + '}')
 
     except ValueError:

@@ -37,7 +37,7 @@ pip install https://github.com/Weber-Shandwick/phe_food_scanner
 ## Usage
 
 ```python
-from phe_recommender.recommender import top_3_swaps, long_list_swaps, eligible_swaps
+from phe_recommender.recommender import top_3_swaps, long_list_swaps, eligible_swaps, top_100_swaps
 
 df = 'path to food_consolidated table'
 
@@ -46,6 +46,8 @@ eligible_swaps(barcode, df) # returns df of eligible swaps
 long_list_swaps(barcode, df) # returns df of 30 top swaps
 
 top_3_swaps(barcode, df) # returns df of top 3 swaps
+
+top_100_swaps(barcode, df) # returns df of 100 swaps including top 3 swaps
 ```
 
 ### Exceptions 
