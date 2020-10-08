@@ -13,58 +13,34 @@ function main(array $data)
     {
         $productBarcode = $row['barcode'];
         $swaps = $row['swaps'];
+        $rank = 0;
 
-        foreach ($swaps as $swap)
+        // swaps are already in order according to all the top 3 and long_list swaps etc
+        // so dont sort by "Rank", "cos_toal", or any other field.
+        foreach ($swaps as $index => $swap)
         {
+            $rank++;
             $swapBarcode = $swap['barcode'];
-            $newRank = $swap['Rank'];
 
-            $objects[] = array(
+            $insertData[] = array(
                 'barcode' => $productBarcode,
                 'swap_barcode' => $swapBarcode,
-                'Rank' => $newRank,
+                'rank' => $rank,
             );
         }
     }
 
-    if (count($objects) > 0)
+    if (count($insertData) > 0)
     {
-        // sort the objects by "rank" (which is actually a similarity rating, not a ranking of the first 30).
-        $sorter = function($a, $b) {
-            $result = $a['barcode'] <=> $b['barcode'];
-
-            if ($result === 0)
-            {
-                $result = $a['Rank'] <=> $b['Rank'];
-            }
-
-            return $result;
-        };
-
-        usort($objects, $sorter);
-
-        // now re-rank so we get numbers 1-30
-        $lastBarcode = "";
-        $newRank = 1;
-
-        foreach ($objects as $index => $object)
-        {
-            if ($object['barcode'] !== $lastBarcode)
-            {
-                $newRank = 1;
-            }
-
-            $originalRank = $objects[$index]['Rank'];
-            //$objects[$index]['original_rank'] = $originalRank;
-            $objects[$index]['Rank'] = $newRank;
-
-            $newRank++;
-            $lastBarcode = $object['barcode'];
-        }
-
         // batch insert the data.
         $db = SiteSpecific::getSwapsCacheDb();
-        $query = \Programster\MysqliLib\MysqliLib::generateBatchInsertQuery($objects, SWAPS_CACHE_BUFFER_TABLE_NAME, $db);
+
+        $query = \Programster\MysqliLib\MysqliLib::generateBatchInsertQuery(
+            $insertData,
+            SWAPS_CACHE_BUFFER_TABLE_NAME,
+            $db
+        );
+
         $result = $db->query($query);
 
         if ($result === false)
