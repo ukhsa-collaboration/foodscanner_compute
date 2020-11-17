@@ -10,11 +10,12 @@ import nltk
 from nltk.corpus import stopwords
 
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.utils import shuffle
 
 count_vectorizer = CountVectorizer(stop_words="english")
-count_vectorizer = CountVectorizer()
+tfidf_vectorizer=TfidfVectorizer() 
 
 
 def update_stopwords():
@@ -33,14 +34,14 @@ def recom_ranked(original_df, recommended_dataframe, barcode):
     """ Method to rank and sort the recommended dataframe """
 
     # Cosine similarity
-    df_ranked = cosine_calculation(recommended_dataframe)
+    df_ranked = cosine_calculation(recommended_dataframe, barcode)
     df_ranked["cos_total"] = (
-        df_ranked["cos_product_name_clean"] + df_ranked["cos_ingredients_clean"]
+        df_ranked["cos_product_name"] + df_ranked["cos_ingredients"]
     ).round(2)
     df_ranked_sorted = df_ranked.sort_values(
         ["cos_total"], ascending=[False]
     ).reset_index()
-
+    
     # Difflib
     search = original_df[original_df["barcode"] == barcode]
     search_str = str(search["product_name_clean"].values.tolist())
@@ -115,7 +116,6 @@ def long_list_swaps(barcode, df):
         raise Exception("Item does not have any alternatives.")
 
     # df_rand = shuffle(df_swaps)
-    # df_rand.sort_values(["cos_total"], ascending=False, inplace=True)
     df_swaps.sort_values(["cos_total"], ascending=False, inplace=True)
 
     return df_swaps
@@ -213,14 +213,15 @@ def top_100_swaps(barcode, df):
         raise Exception("Item has a good choice badge. Great choice.")
 
     recom = recom_check(barcode, df)
-
+    
     if recom.empty:
         raise Exception("Item does not have healthier alternatives.")
 
     if recom["barcode"].iloc[0] != barcode:
         df_swaps = recom_ranked(df, recom, barcode)
         df_swaps.drop(df_swaps[df_swaps["barcode"] == barcode].index, inplace=True)
-        df_swaps.drop(df_swaps[df_swaps["product_name"] == barcode].index, inplace=True)
+        df_swaps = df_swaps[df_swaps['cos_product_name'] > 0.052]
+        df_swaps = df_swaps[df_swaps['cos_total'] > 0.10]
         df_swaps.sort_values(["cos_total"], ascending=False, inplace=True)
     else:
         raise Exception("Item does not have healthier alternatives.")
@@ -240,7 +241,7 @@ def top_100_swaps(barcode, df):
 
     if len(pgc) == 0:
         if len(manufact) > 0:
-            manu_swap = df_swaps[df_swaps["manufacturer_clean"] == manufact[0]][:1]
+            manu_swap = df_swaps[df_swaps["manufacturer_clean"] == manufact[0]]
 
         if str(retailer) is None:
             retail_swaps = df_swaps
@@ -276,10 +277,12 @@ def top_100_swaps(barcode, df):
         raise Exception("Item does not have any alternatives.")
 
     tries = 0
+    idx = 0
     while len(new_df_pgc) < 3:
-        new_df_pgc = new_df_pgc.append(df_swaps[:100].sample())
+        new_df_pgc = new_df_pgc.append(df_swaps.iloc[idx])
         new_df_pgc.drop_duplicates(subset="product_name", inplace=True)
         tries += 1
+        idx +=1
         if tries >= 15:
             raise Exception(
                 "Sorry, this product does not have enough swaps to build a top 3."
@@ -300,8 +303,8 @@ def selection(barcode, df):
 	packsize and packcount based on the desired user-defined size percent
 	and count percent."""
 
-    size_percent = 0.4
-    count_percent = 0.4
+    size_percent = 0.2
+    count_percent = 0.2
 
     # Pull out manufacturer
     manufacturer = df.loc[df["barcode"] == barcode, "manufacturer_clean"]
@@ -313,9 +316,9 @@ def selection(barcode, df):
     df["packcount"].fillna(0, inplace=True)
 
     # define range for packsize
-    packsize = int(df.loc[df["barcode"] == barcode, "packsize"].iloc[0])
-    packsize_low = int(packsize - packsize * size_percent)
-    packsize_high = int(packsize + packsize * size_percent)
+    packsize = float(df.loc[df["barcode"] == barcode, "packsize"].iloc[0])
+    packsize_low = float(packsize - packsize * size_percent)
+    packsize_high = float(packsize + packsize * size_percent)
 
     # define range for packcount
     packcount = int(df.loc[df["barcode"] == barcode, "packcount"].iloc[0])
@@ -428,9 +431,9 @@ def recom_check(barcode, df):
         PHE_cat = df.loc[df["barcode"] == barcode, "main_and_sub1"].iloc[0]
 
         # define range for packsize
-        packsize = int(df.loc[df["barcode"] == barcode, "packsize"].iloc[0])
-        packsize_low = int(packsize - packsize * size_percent)
-        packsize_high = int(packsize + packsize * size_percent)
+        packsize = float(df.loc[df["barcode"] == barcode, "packsize"].iloc[0])
+        packsize_low = float(packsize - packsize * size_percent)
+        packsize_high = float(packsize + packsize * size_percent)
 
         # define range for packcount
         packcount = int(df.loc[df["barcode"] == barcode, "packcount"].iloc[0])
@@ -488,6 +491,7 @@ def recom_check(barcode, df):
                 "barcode",
                 "product_name",
                 "product_name_clean",
+                "ingredients",
                 "ingredients_clean",
                 "badge_new",
                 "packsize",
@@ -523,6 +527,7 @@ def recom_check(barcode, df):
                 "barcode",
                 "product_name",
                 "product_name_clean",
+                "ingredients",
                 "ingredients_clean",
                 "badge_new",
                 "packsize",
@@ -538,13 +543,13 @@ def recom_check(barcode, df):
                 "PHE_cat",
                 "manufacturer_clean",
                 "retailer_extract",
-                "pgc_badge",
+                "pgc_badge"
             ]
         ]
 
     # Fill the ingredients_clean NaNs with product_name_clean from corresponding row
-    df_check_final["ingredients_clean"].fillna(
-        df_check_final["product_name_clean"], inplace=True
+    df_check_final["ingredients"].fillna(
+        df_check_final["product_name"], inplace=True
     )
 
     # Filter by same retailer and null values
@@ -558,26 +563,27 @@ def recom_check(barcode, df):
     return df_check_final
 
 
-def cosine_calculation(df):
+def cosine_calculation(df, barcode):
 
     """Method to calculate the cosine similarities between items. The cosine similarities will
 	be used to rank the recommended items"""
 
-    columns_list = ["product_name_clean", "ingredients_clean"]
-
+    columns_list = ["product_name", "ingredients"]
+    product_scanned = df[df['barcode'] == barcode]
+    
     for i in columns_list:
-
+        
         df_list = np.array(df[i])
-        sparse_matrix = count_vectorizer.fit_transform(df_list)
+        sparse_matrix = tfidf_vectorizer.fit_transform([product_scanned[i].iloc[0]] + df_list)
         doc_term_matrix = sparse_matrix.todense()
         df_model = pd.DataFrame(
             doc_term_matrix,
-            columns=count_vectorizer.get_feature_names(),
+            columns=tfidf_vectorizer.get_feature_names(),
             index=[df_list],
         )
-
-        cosine = pd.DataFrame(cosine_similarity(df_model, df_model))
-
+        
+        cosine = pd.DataFrame(cosine_similarity(df_model))
+        
         df.reset_index(drop=True, inplace=True)
         cosine.reset_index(drop=True, inplace=True)
 
