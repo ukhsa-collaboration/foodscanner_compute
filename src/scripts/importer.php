@@ -59,6 +59,18 @@ try
     $data = Safe\json_decode($content, true);
     main($data);
 }
+catch (JsonException | \Safe\Exceptions\JsonException $jsonException)
+{
+    $context = array(
+        'content_to_decode' => $content,
+        'message' => $jsonException->getMessage(),
+        'line' => $jsonException->getLine(),
+        'file' => $jsonException->getFile(),
+        'trace' => $jsonException->getTraceAsString(),
+    );
+
+    SiteSpecific::getLogger()->error("There was an exception performing json_decode", $context);
+}
 catch (Exception $ex)
 {
     $context = array(

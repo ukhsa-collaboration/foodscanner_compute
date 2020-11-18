@@ -33,12 +33,12 @@ def swapsRoutineForBarcode(barcode, df):
     try:
         output = top_100_swaps(barcode, df)
         jsonObj = output.to_json(orient='records')
-        jsonObj2 = json.loads('{"barcode" : ' + barcode + ', "swaps" : ' + jsonObj + '}')
+        jsonObj2 = json.loads('{"barcode" : "' + barcode + '", "swaps" : ' + jsonObj + '}')
 
     except ValueError:
-        jsonObj2 = json.loads('{"barcode" : ' + barcode + ', "swaps" : [] }')
+        jsonObj2 = json.loads('{"barcode" : "' + barcode + '", "swaps" : [] }')
     except Exception:
-        jsonObj2 = json.loads('{"barcode" : ' + barcode + ', "swaps" : [] }')
+        jsonObj2 = json.loads('{"barcode" : "' + barcode + '", "swaps" : [] }')
 
     return jsonObj2
 
