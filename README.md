@@ -27,6 +27,14 @@ the cached results.
 * `SWAPS_CACHE_DB_NAME` -  The name of the database that will hold the swaps cache. E.g. `swaps`
 * `SWAPS_CACHE_DB_PORT` - The port to connect with: e.g. 3306 (default mysql port)
 
+### Image Compression Variables
+There are also a set of environment variables necessary for the image compression routine:
+
+* `COMPRESSED_IMAGE_QUALITY` - the quality level of the compressed images. This should be a number between 1-100. E.g. 60
+* `S3_IMAGE_BUCKET_KEY` - the AWS credential key for accessing the S3 bucket that contains the images
+* `S3_IMAGE_BUCKET_SECRET` - the AWS credential secret for accessing the S3 bucket that contains the images
+* `S3_IMAGE_BUCKET_NAME` - the name of the bucket that contains the images.
+* `S3_IMAGE_BUCKET_PATH` - the path to the folder within the bucket that contains the images. The code will handle if you start with a "/" or not.
 
 ## Example Build and Deployment Commands
 
@@ -51,6 +59,11 @@ docker run -it \
     -e SWAPS_CACHE_DB_PASSWORD="myOtherAmazingPassword" \
     -e SWAPS_CACHE_DB_NAME="swaps" \
     -e SWAPS_CACHE_DB_PORT=3306 \
+    -e COMPRESSED_IMAGE_QUALITY=60 \
+    -e S3_IMAGE_BUCKET_KEY="AKIAFAKEBUCKETKEYDD2" \
+    -e S3_IMAGE_BUCKET_SECRET="thisIsAFakeBucketSecretdfe2434dgernZW3Wx" \
+    -e S3_IMAGE_BUCKET_NAME="my-bucket-of-images" \
+    -e S3_IMAGE_BUCKET_PATH="/" \
     swaps-compute-engine
 ```
 

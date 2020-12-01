@@ -9,3 +9,4 @@ python3 generate-pickle-cache.py
 chmod +x multiprocess.sh
 ./multiprocess.sh commands.sh
 php swap-cache-tables.php
+php compress-images.php
