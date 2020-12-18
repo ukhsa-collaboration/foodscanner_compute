@@ -5,6 +5,7 @@
         "symfony/dotenv": "^5.1",
         "programster/log": "^1.1",
         "irap/multi-query": "^2.0",
-        "irap/autoloader": "1.*"
+        "irap/autoloader": "1.*",
+        "programster/mysql-objects": "^3.4"
     }
 }

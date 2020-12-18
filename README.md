@@ -36,6 +36,16 @@ There are also a set of environment variables necessary for the image compressio
 * `S3_IMAGE_BUCKET_NAME` - the name of the bucket that contains the images.
 * `S3_IMAGE_BUCKET_PATH` - the path to the folder within the bucket that contains the images. The code will handle if you start with a "/" or not.
 
+
+### Machine Learning Algorithm
+One also needs to specify which machine-learning algorithm to use for calculating a category information which is then used for calculating swaps.
+
+* `ML_ALGORITHM` - needs to be one of "spacy", "sklearn", or "both".
+
+`both` is here for dev purposes. It will have us generate the categories for both so we can send back the information
+for picking which algorithm to use in future. In such a scenario, spacy will be the one that is then used when
+calculating swaps as only one algorithm can be used at a time.
+
 ## Example Build and Deployment Commands
 
 When you have checked out the codebase, you should be able to build with:
@@ -64,13 +74,17 @@ docker run -it \
     -e S3_IMAGE_BUCKET_SECRET="thisIsAFakeBucketSecretdfe2434dgernZW3Wx" \
     -e S3_IMAGE_BUCKET_NAME="my-bucket-of-images" \
     -e S3_IMAGE_BUCKET_PATH="/" \
+    -e ML_ALGORITHM="spacy" \
     swaps-compute-engine
 ```
 
 Alternatively, you can put the environment variables into an env file, and specify it with `--env-file`.
 
+### Database Requirements
+To improve performance, the code in this project is likely t send very large queries to the database.
+* The `max_allowed_packet_size` MySQL configuration variable needs to be increased to above its default of 64MiB.
+* The database should have at least 2 GiB of RAM.
 
 ### Crontab
-To achieve the desired effect of starting up, running the calculations, and shutting down, install the cros.conf file
+To achieve the desired effect of starting up, running the calculations, and shutting down, install the crons.conf file 
 on the server hosting the docker container.
-

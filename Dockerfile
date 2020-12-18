@@ -6,11 +6,16 @@ ENV TZ=Europe/London
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
     && apt-get update \
     && apt-get dist-upgrade -y \
-    && apt-get install -y vim python3-pip python3-pymysql php7.4-cli php7.4-mysql php7.4-gd python3-setuptools composer \
+    && apt-get install -y cron vim python3-pip python3-pymysql php7.4-cli php7.4-mysql php7.4-gd python3-setuptools composer \
     && pip3 install flask_sqlalchemy
 
 # Install AWS CLI (pip already installed)
 RUN pip3 install awscli
+
+# Add and install the machine learning categorization module
+COPY categorizer-module /root/categorizer-module
+WORKDIR /root/categorizer-module
+RUN pip3 install -r requirements.txt
 
 # Add and install the swaps module
 COPY phe-swaps-module /root/phe-swaps-module

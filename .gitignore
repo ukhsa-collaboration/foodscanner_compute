@@ -1,5 +1,6 @@
 .env
 src/vendor
-src/commands.sh
+src/scripts/commands.sh
 .fuse*
 df_cache.pkl
+.DS_Store

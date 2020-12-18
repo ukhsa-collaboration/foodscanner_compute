@@ -59,7 +59,10 @@ class SiteSpecific
 
         if ($logger === null)
         {
-            $logger = new Programster\Log\MysqliLogger(SiteSpecific::getSwapsCacheDb(), "logs");
+            $fileLogger = new Programster\Log\FileLogger(__DIR__ . '/../logs.csv');
+            $mysqlLogger = new Programster\Log\MysqliLogger(SiteSpecific::getSwapsCacheDb(), "logs");
+            $multiLogger = new Programster\Log\MultiLogger($fileLogger, $mysqlLogger);
+            $logger = new Programster\Log\MinLevelLogger(1, $multiLogger);
         }
 
         return $logger;

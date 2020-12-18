@@ -8,6 +8,8 @@
 
 require_once(__DIR__ . '/../bootstrap.php');
 
+SiteSpecific::getLogger()->info("Swaps compute engine - swapping cache tables.");
+
 $queries = array(
     "RENAME TABLE `swaps` to `swaps_buffer_replacement`",
     "RENAME TABLE `swaps_buffer` to `swaps`",
@@ -21,3 +23,8 @@ if ($multiquery->wasSuccessful() === false)
 {
     SiteSpecific::getLogger()->error("Swapping cache tables failed.", ['errors' => $multiquery->getErrors()]);
 }
+else
+{
+    SiteSpecific::getLogger()->info("Swaps compute engine - finished swapping cache tables.");
+}
+

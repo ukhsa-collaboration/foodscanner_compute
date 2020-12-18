@@ -10,6 +10,7 @@ require_once(__DIR__ . '/../bootstrap.php');
 
 function main()
 {
+    SiteSpecific::getLogger()->info("Starting s3 bucket image compression.");
     $dest =  __DIR__ . '/product-images';
 
     $requiredEnvironmentVariables = array(
@@ -52,6 +53,7 @@ function main()
 
     // compress
     $files = Programster\CoreLibs\Filesystem::getDirContents($localFolder, true, false);
+    SiteSpecific::getLogger()->info("Compute engine image compressor - there are " . count($files) . " in folder to compress.");
 
     foreach ($files as $filename)
     {
@@ -71,10 +73,14 @@ function main()
         }
     }
 
+    $endFiles = Programster\CoreLibs\Filesystem::getDirContents($localFolder, true, false);
+    SiteSpecific::getLogger()->info("Compute engine image compressor - finished with " . count($endFiles) . " files in images folder.");
+
     // sync up
     shell_exec("aws s3 sync {$localFolder} {$fullBucketPath}");
     shell_exec("aws configure set aws_access_key_id xxx");
     shell_exec("aws configure set aws_secret_access_key xxx");
+    SiteSpecific::getLogger()->info("Finished S3 bucket image compression.");
 }
 
 

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5899846d4908864804b658f34a8d5f1a",
+    "content-hash": "ca4045779b8b76fb897a69f75b0afbd3",
     "packages": [
         {
             "name": "brick/math",
@@ -299,16 +299,16 @@
         },
         {
             "name": "programster/log",
-            "version": "1.2.0",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/programster/package-logging.git",
-                "reference": "79ecf141e12f9afff62abf8cbc630963ed6389eb"
+                "reference": "276bfb26af35428de6bd132b0e0b9a0364b1239b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/programster/package-logging/zipball/79ecf141e12f9afff62abf8cbc630963ed6389eb",
-                "reference": "79ecf141e12f9afff62abf8cbc630963ed6389eb",
+                "url": "https://api.github.com/repos/programster/package-logging/zipball/276bfb26af35428de6bd132b0e0b9a0364b1239b",
+                "reference": "276bfb26af35428de6bd132b0e0b9a0364b1239b",
                 "shasum": ""
             },
             "require": {
@@ -340,7 +340,58 @@
                 "log",
                 "logging"
             ],
-            "time": "2020-10-12T10:23:26+00:00"
+            "time": "2020-12-03T11:34:03+00:00"
+        },
+        {
+            "name": "programster/mysql-objects",
+            "version": "3.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/programster/package-mysql-objects.git",
+                "reference": "26a37d9ead163f783e164d1d8bf14046757639e1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/programster/package-mysql-objects/zipball/26a37d9ead163f783e164d1d8bf14046757639e1",
+                "reference": "26a37d9ead163f783e164d1d8bf14046757639e1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.0",
+                "programster/core-libs": "~1.7",
+                "programster/mysqli-lib": "^1.0",
+                "ramsey/uuid": "^4.1"
+            },
+            "require-dev": {
+                "irap/autoloader": "1.0.*",
+                "irap/migrations": "1.0.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Programster\\MysqlObjects\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stuart Page",
+                    "email": "sdpagent@gmail.com",
+                    "homepage": "https://blog.programster.org",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Package for rapidly developing models that represent mysql tables. Tables must have an id field.",
+            "homepage": "https://github.com/programster/package-mysql-objects",
+            "keywords": [
+                "models",
+                "mysql",
+                "mysqli"
+            ],
+            "time": "2020-10-13T13:19:37+00:00"
         },
         {
             "name": "programster/mysqli-lib",
@@ -658,16 +709,16 @@
         },
         {
             "name": "symfony/dotenv",
-            "version": "v5.1.8",
+            "version": "v5.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dotenv.git",
-                "reference": "29ac2a3e538da61780a769827c716738ce7accbb"
+                "reference": "264ca18dd6e4ab3cfa525ee52cceff9540a1019e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dotenv/zipball/29ac2a3e538da61780a769827c716738ce7accbb",
-                "reference": "29ac2a3e538da61780a769827c716738ce7accbb",
+                "url": "https://api.github.com/repos/symfony/dotenv/zipball/264ca18dd6e4ab3cfa525ee52cceff9540a1019e",
+                "reference": "264ca18dd6e4ab3cfa525ee52cceff9540a1019e",
                 "shasum": ""
             },
             "require": {
@@ -721,7 +772,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-10-24T12:01:57+00:00"
+            "time": "2020-11-18T09:42:36+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
