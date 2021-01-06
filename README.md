@@ -86,5 +86,13 @@ To improve performance, the code in this project is likely t send very large que
 * The database should have at least 2 GiB of RAM.
 
 ### Crontab
-To achieve the desired effect of starting up, running the calculations, and shutting down, install the crons.conf file 
+To achieve the desired effect of starting up, running the calculations, and shutting down, install the crons.conf file
 on the server hosting the docker container.
+
+### Debugging
+If you are debugging the categorizer module, any changes you make wont apply immediately, one has to change the script
+inside the Docker container and then run:
+
+```bash
+python3 /root/phe-swaps-module/phe_recommender setup.py install
+```

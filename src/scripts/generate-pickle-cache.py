@@ -19,8 +19,14 @@ if False:
     dbConnection = sqlEngine.connect()
     query = "SELECT * FROM " + dbName + "." + tableName
     df = pandas.read_sql(query, dbConnection);
+
+    if False:
+        outputFile = open("/root/df-json.json",'w', encoding='utf-8')
+        jsonString = df.to_json(orient='records')
+        outputFile.write(jsonString)
+
 else:
     filepath = sys.argv[1]
-    df = pandas.read_json(filepath)
+    df = pandas.read_json(filepath, orient='records', dtype=False)
 
 df.to_pickle('df_cache.pkl');

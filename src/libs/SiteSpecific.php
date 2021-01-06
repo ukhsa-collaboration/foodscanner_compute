@@ -19,6 +19,14 @@ class SiteSpecific
                 getenv('SWAPS_CACHE_DB_NAME'),
                 getenv('SWAPS_CACHE_DB_PORT')
             );
+
+            if (!$db->set_charset("utf8"))
+            {
+                printf("Error loading character set utf8: %s\n", $mysqli->error);
+                die();
+            }
+
+            $db->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
         }
 
         return $db;
@@ -43,6 +51,14 @@ class SiteSpecific
                 getenv('ETL_DB_NAME'),
                 getenv('ETL_DB_PORT')
             );
+
+            if (!$db->set_charset("utf8"))
+            {
+                printf("Error loading character set utf8: %s\n", $db->error);
+                die();
+            }
+
+            $db->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
         }
 
         return $db;

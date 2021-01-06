@@ -91,7 +91,7 @@ function main(string $filepath)
         }
 
 
-        $jsonForm = json_encode($foodConsolidatedRow);
+        $jsonForm = json_encode($foodConsolidatedRow, JSON_PRESERVE_ZERO_FRACTION); // using JSON_NUMERIC_CHECK will also try and change the barcode.
 
         if ($jsonForm === FALSE)
         {
