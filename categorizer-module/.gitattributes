@@ -2,8 +2,14 @@
 # Git for Windows is configured to normalize Windows-style ones (CRLF) to Unix-style end-of-line characters (LF) during commiting for the repo, and the reverse on checkout. 
 # Training binary files should not go through this conversion. To prevent this, we can 'unset' the text attribute for training files by using a dash, which tells Git not to attempt any end-of-line conversion upon commiting or checkout
 prodigy/training/** -text
+
+spacy/data/*.xlsx filter=lfs diff=lfs merge=lfs -text
+spacy/data/dataset_spacy_train.json filter=lfs diff=lfs merge=lfs -text
+spacy/data/dataset_spacy_val.json filter=lfs diff=lfs merge=lfs -text
 spacy/training/** -text
 spacy/training/model-best/textcat/model filter=lfs diff=lfs merge=lfs -text
+
+sklearn/data/*.xlsx filter=lfs diff=lfs merge=lfs -text
 sklearn/models/LinearSVC.pkl filter=lfs diff=lfs merge=lfs -text
 sklearn/models/LogisticRegression.pkl filter=lfs diff=lfs merge=lfs -text
 sklearn/models/MultinomialNB.pkl filter=lfs diff=lfs merge=lfs -text
