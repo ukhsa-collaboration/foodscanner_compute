@@ -102,11 +102,13 @@ sample_weights = compute_sample_weight(
     y=y,
 )
 
-
 X = df.drop("label", axis=1)
 
 le = LabelEncoder()
 y = le.fit_transform(y)
+
+if not os.path.isdir("models"):
+    os.mkdir("models")
 
 joblib.dump(
     le,
@@ -306,9 +308,6 @@ classifiers["XGBClassifier"] = {
     "pipeline": pipeline,
     "params": params,
 }
-
-if not os.path.isdir("models"):
-    os.mkdir("models")
 
 for k, v in classifiers.items():
 
