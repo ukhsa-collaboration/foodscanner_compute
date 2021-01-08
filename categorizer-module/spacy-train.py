@@ -12,7 +12,7 @@ df = (
         os.path.join(
             "spacy",
             "data",
-            "200901_PHE_category_sheet.xlsx",
+            "201026_PHE_category_sheet.xlsx",
         ),
         usecols=[
             "lProductVersionID",
