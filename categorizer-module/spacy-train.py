@@ -1,5 +1,4 @@
-# spacy
-import os
+from pathlib import Path
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -9,7 +8,7 @@ import spacy
 
 df = (
     pd.read_excel(
-        os.path.join(
+        Path(
             "spacy",
             "data",
             "201026_PHE_category_sheet.xlsx",
@@ -111,7 +110,8 @@ def split_save_json(df, test_size):
     )
 
     train.to_json(
-        os.path.join(
+        Path(
+            "spacy",
             "data",
             "dataset_spacy_train.json",
         ),
@@ -119,7 +119,8 @@ def split_save_json(df, test_size):
     )
 
     val.to_json(
-        os.path.join(
+        Path(
+            "spacy",
             "data",
             "dataset_spacy_val.json",
         ),
