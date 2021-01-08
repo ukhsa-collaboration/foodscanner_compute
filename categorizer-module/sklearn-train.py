@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 import joblib
 import pandas as pd
@@ -18,10 +18,10 @@ from sklearn.utils.class_weight import compute_class_weight, compute_sample_weig
 
 df = (
     pd.read_excel(
-        os.path.join(
+        Path(
             "sklearn",
             "data",
-            "200901_PHE_category_sheet.xlsx",
+            "201026_PHE_category_sheet.xlsx",
         ),
         usecols=[
             "lProductVersionID",
@@ -107,12 +107,12 @@ X = df.drop("label", axis=1)
 le = LabelEncoder()
 y = le.fit_transform(y)
 
-if not os.path.isdir("models"):
-    os.mkdir("models")
+if not Path("sklearn", "models").is_dir():
+    Path("sklearn", "models").mkdir()
 
 joblib.dump(
     le,
-    os.path.join(
+    Path(
         "sklearn",
         "models",
         "LabelEncoder.pkl",
@@ -329,7 +329,8 @@ for k, v in classifiers.items():
 
     joblib.dump(
         gs,
-        os.path.join(
+        Path(
+            "sklearn",
             "models",
             f"{k}.pkl",
         ),
@@ -338,7 +339,8 @@ for k, v in classifiers.items():
 for k, v in classifiers.items():
 
     gs = joblib.load(
-        os.path.join(
+        Path(
+            "sklearn",
             "models",
             f"{k}.pkl",
         )
@@ -392,7 +394,7 @@ classifiers["VotingClassifier"] = {
 
 joblib.dump(
     vc,
-    os.path.join(
+    Path(
         "sklearn",
         "models",
         "VotingClassifier.pkl",
@@ -400,7 +402,7 @@ joblib.dump(
 )
 
 pd.DataFrame.from_dict(classifiers, orient="index",).to_csv(
-    os.path.join(
+    Path(
         "sklearn",
         "models",
         "models.csv",
