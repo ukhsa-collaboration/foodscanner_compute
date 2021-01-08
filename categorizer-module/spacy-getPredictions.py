@@ -1,4 +1,3 @@
-# spacy
 import datetime
 import json
 import os
@@ -23,7 +22,7 @@ for argument in arguments:
             argument[1],
         )
 
-if path == None:
+if path is None:
     print("Error")
     exit()
 
