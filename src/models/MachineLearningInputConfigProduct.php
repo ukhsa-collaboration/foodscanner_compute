@@ -17,7 +17,7 @@ class MachineLearningInputConfigProduct implements JsonSerializable
     private string $m_storageTypeString;
     private string $m_packTypeString;
     private array $m_ingredients;
-    private ?string $m_cookingGuidelines = null;
+    private string $m_cookingGuidelines;
 
 
     /**
@@ -38,6 +38,7 @@ class MachineLearningInputConfigProduct implements JsonSerializable
         string $subCategoryName,
         ?string $storageTypeString,
         ?string $packTypeString,
+        ?string $cookingGuidelines,
         array $ingredients
     )
     {
@@ -47,6 +48,7 @@ class MachineLearningInputConfigProduct implements JsonSerializable
         $this->m_subCategoryName = $subCategoryName;
         $this->m_storageTypeString = $storageTypeString ?? ""; // if null, the input json needs to be empty string
         $this->m_packTypeString = $packTypeString ?? ""; // if null, the input json needs to be empty string
+        $this->m_cookingGuidelines = $cookingGuidelines ?? "";
         $this->m_ingredients = $ingredients;
     }
 
@@ -68,12 +70,8 @@ class MachineLearningInputConfigProduct implements JsonSerializable
             'packType'    => array(array('lookupValue' => $this->m_packTypeString)),
             'ingredients' => $this->m_ingredients,
             'regulatedProductName' => $this->m_regulatedProductName,
+            'cookingGuidelines' => $this->m_cookingGuidelines,
         );
-
-        if (!empty($this->m_cookingGuidelines))
-        {
-            $attributes['cookingGuidelines'] = $this->m_cookingGuidelines;
-        }
 
         $languages = array(
             array(
@@ -119,6 +117,26 @@ class MachineLearningInputConfigProduct implements JsonSerializable
             $ingredientsArray = explode("|", $foodItem->getIngredients());
         }
 
+        $cookingGuidelinesJson = $extendedItem->getPreparationInstructions();
+
+        if (!empty($cookingGuidelinesJson))
+        {
+            $cookingGuidelinesArray = json_decode($cookingGuidelinesJson, true);
+            $cookingMethods = [];
+
+            foreach ($cookingGuidelinesArray as $cookingInstruction)
+            {
+                $method = $cookingInstruction['method'];
+                $cookingMethods[$method] = 1;
+            }
+
+            $cookingGuidelinesString = implode(" | ", array_keys($cookingMethods));
+        }
+        else
+        {
+            $cookingGuidelinesString = null;
+        }
+
         return new MachineLearningInputConfigProduct(
             $foodItem->getBarcode(),
             $foodItem->getProductName(),
@@ -126,6 +144,7 @@ class MachineLearningInputConfigProduct implements JsonSerializable
             $foodItem->getSubCategoryName(),
             $extendedItem->getStorageTypeString(),
             $extendedItem->getPackTypeString(),
+            $cookingGuidelinesString,
             $ingredientsArray
         );
     }
