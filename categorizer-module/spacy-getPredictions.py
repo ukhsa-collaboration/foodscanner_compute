@@ -72,22 +72,11 @@ df['pack_type'] = df['languages'].apply(
 )
 
 
-def parse_cooking_guidelines(c):
-    try:
-        guidelines = [
-            item['nameValue']
-            for item in c[0]['groupingSets'][0]['attributes']
-            ['cookingGuidelines']
-        ]
-        return '. '.join(set(guidelines))
-
-    except KeyError:
-        return 'None'
-
-
 df['cooking_type'] = df['languages'].apply(
-    parse_cooking_guidelines
+    lambda
+    c: c[0]['groupingSets'][0]['attributes']['cookingGuidelines']
 )
+
 
 df = df[[
     'category_level_1',
