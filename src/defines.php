@@ -42,6 +42,8 @@ define('ONLY_USE_ML_CAT_IF_OVERRIDING_PHE_CAT', false);
 # one go, resulting in a single insert query.
 define('SPACY_OUTPUT_FOLDER', '/root/spacy-output');
 define('SKLEARN_OUTPUT_FOLDER', '/root/sklearn-output');
+define('SPACY_ERROR_OUTPUT_FOLDER', '/root/spacy-error-output');
+define('SKLEARN_ERROR_OUTPUT_FOLDER', '/root/sklearn-error-output');
 
 
 # Specify the number of products per single json config
