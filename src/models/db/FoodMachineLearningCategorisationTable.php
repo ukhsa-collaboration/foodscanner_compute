@@ -56,7 +56,7 @@ class FoodMachineLearningCategorisationTable extends Programster\MysqlObjects\Ab
      */
     public function findByBarcode(string $barcode) : FoodMachineLearningCategorisationRow
     {
-        $products = $this->loadWhereAnd(['barcode' => $pvid]);
+        $products = $this->loadWhereAnd(['barcode' => $barcode]);
 
         if (count($products) !== 1)
         {
