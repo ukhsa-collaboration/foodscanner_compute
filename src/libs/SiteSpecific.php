@@ -20,10 +20,19 @@ class SiteSpecific
                 getenv('SWAPS_CACHE_DB_PORT')
             );
 
-            if (!$db->set_charset("utf8"))
+            if ($db->connect_error)
             {
-                printf("Error loading character set utf8: %s\n", $mysqli->error);
-                die();
+                SiteSpecific::getLogger()->error("Compute engine failed to connect to the swaps database.");
+                die("Compute engine failed to connect to the swaps database.");
+            }
+
+            if ($db->character_set_name() !== "utf8mb4")
+            {
+                if (!$db->set_charset("utf8mb4"))
+                {
+                    SiteSpecific::getLogger()->error("Failed to set the swaps mysql connection character set to utf8mb4", ['mysqli_error' => $db->error]);
+                    die("Failed to set the swaps mysql connection character set to utf8mb4");
+                }
             }
 
             $db->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
@@ -52,10 +61,19 @@ class SiteSpecific
                 getenv('ETL_DB_PORT')
             );
 
-            if (!$db->set_charset("utf8"))
+            if ($db->connect_error)
             {
-                printf("Error loading character set utf8: %s\n", $db->error);
-                die();
+                SiteSpecific::getLogger()->error("Compute engine failed to connect to the ETL database.");
+                die("Compute engine failed to connect to the ETL database.");
+            }
+
+            if ($db->character_set_name() !== "utf8mb4")
+            {
+                if (!$db->set_charset("utf8"))
+                {
+                    SiteSpecific::getLogger()->error("Failed to set the ETL mysql connection character set to utf8mb4", ['mysqli_error' => $db->error]);
+                    die("Failed to set the ETL mysql connection character set to utf8mb4");
+                }
             }
 
             $db->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
