@@ -50,11 +50,11 @@ class FoodMachineLearningCategorisationTable extends Programster\MysqlObjects\Ab
 
     /**
      * Fetch a single product by its barcode
-     * @param string $pvid
-     * @return \FoodConsolidatedItem
+     * @param string $barcode
+     * @return \FoodMachineLearningCategorisationRow
      * @throws ExceptionProductNotFound - if the product with the provided barcode could not be found.
      */
-    public function findByBarcode(string $barcode) : BrandbankFeedItem
+    public function findByBarcode(string $barcode) : FoodMachineLearningCategorisationRow
     {
         $products = $this->loadWhereAnd(['barcode' => $pvid]);
 
