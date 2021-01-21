@@ -211,7 +211,7 @@ def top_100_swaps(barcode, df):
 
     if (df[df["barcode"] == barcode]["badge_new"] == 1).all():
         raise Exception("Item has a good choice badge. Great choice.")
-
+    
     recom = recom_check(barcode, df)
     
     if recom.empty:
@@ -272,12 +272,18 @@ def top_100_swaps(barcode, df):
     new_df = retail_swaps.append(manu_swap)
     new_df_pgc = new_df.append(pgc)
     new_df_pgc.drop_duplicates(subset="product_name", inplace=True)
-
+    
     if len(new_df_pgc) == 0:
         raise Exception("Item does not have any alternatives.")
+    
+    if len(df_swaps) < 3:
+        raise Exception(
+                "Sorry, this product does not have enough swaps to build a top 3."
+            )
 
     tries = 0
     idx = 0
+
     while len(new_df_pgc) < 3:
         new_df_pgc = new_df_pgc.append(df_swaps.iloc[idx])
         new_df_pgc.drop_duplicates(subset="product_name", inplace=True)
@@ -399,7 +405,7 @@ def recom_check(barcode, df):
 	n_recommendation is the desired minimum number of recommendation"""
 
     df_check = selection(barcode, df)
-
+    
     n_recommendation = 3
     size_percent = 0.2
     count_percent = 0.2
@@ -415,7 +421,7 @@ def recom_check(barcode, df):
 
     # concatenate high five man and badge new datafarmes
     df_check_final = pd.concat([df_check_badge, df_check_hfm], ignore_index=True)
-
+    
     # Add barcode item if it has been filtered out
     if barcode not in df_check_final.barcode.values:
         df_check_final = pd.concat([df_check_final, item], ignore_index=True)
@@ -551,15 +557,19 @@ def recom_check(barcode, df):
     df_check_final["ingredients"].fillna(
         df_check_final["product_name"], inplace=True
     )
-
-    # Filter by same retailer and null values
+    
+    # Filter by same retailer and None values
     retailer = df[df["barcode"] == barcode]["retailer_extract"]
     retailer = retailer.to_list()
-    df_check_final = df_check_final[
-        (df_check_final["retailer_extract"].isin(retailer))
-        | (df_check_final["retailer_extract"].isnull())
-    ]
-
+    
+    if pd.isnull(retailer) == False:
+        df_check_final = df_check_final[
+            (df_check_final["retailer_extract"].isin([retailer, None]))
+            | (df_check_final["retailer_extract"].isnull())
+        ]
+    else:
+        pass
+    
     return df_check_final
 
 

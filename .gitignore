@@ -1,4 +1,5 @@
 .env
+src/logs.csv
 src/vendor
 src/scripts/commands.sh
 .fuse*
