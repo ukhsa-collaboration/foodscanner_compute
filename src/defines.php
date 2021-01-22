@@ -48,3 +48,11 @@ define('SKLEARN_ERROR_OUTPUT_FOLDER', '/root/sklearn-error-output');
 
 # Specify the number of products per single json config
 define('ML_NUM_PRODUCTS_PER_JSON_INPUT_CONFIG', 20);
+
+
+# Specify whether you want to strip out all the products that are category none or not, from the input to the swaps
+# the result being that any product with category none will not produce any swaps, and they will also never appear
+# as swaps for other products.
+# The reasoning for stripping out such products is because brandbank have been told to just categorize "alcohol related"
+# products as none. E.g. an alcohol-free beer, or a "mixer".
+define('SWAPS_STRIP_OUT_CATEGORY_NONE', true);
