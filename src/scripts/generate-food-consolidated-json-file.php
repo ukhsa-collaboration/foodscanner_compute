@@ -55,7 +55,8 @@ function main(string $filepath)
     }
 
     $numProducts = 0;
-    $numProductsWithNoneCategory = 0;
+    $numProductsWithCategoryNone = 0;
+    $numProductsWithCategoryOther = 0;
 
     while (($foodConsolidatedRow = $foodConsolidatedTableResult->fetch_assoc()) !== null)
     {
@@ -95,9 +96,19 @@ function main(string $filepath)
 
         if (in_array($foodConsolidatedRow['PHE_cat'], ["", "none", null]))
         {
-            $numProductsWithNoneCategory++;
+            $numProductsWithCategoryNone++;
 
             if (SWAPS_STRIP_OUT_CATEGORY_NONE)
+            {
+                continue;
+            }
+        }
+
+        if (strtolower($foodConsolidatedRow['PHE_cat']) === "other")
+        {
+            $numProductsWithCategoryOther++;
+
+            if (SWAPS_STRIP_OUT_CATEGORY_OTHER)
             {
                 continue;
             }
@@ -130,8 +141,10 @@ function main(string $filepath)
 
     $context = [
         'num_products_processed' => $numProducts,
-        'num_products_with_category_none' => $numProductsWithNoneCategory,
+        'num_products_with_category_none' => $numProductsWithCategoryNone,
+        'num_products_with_category_other' => $numProductsWithCategoryOther,
         'products_with_none_category_removed' => (SWAPS_STRIP_OUT_CATEGORY_NONE) ? "yes" : "no",
+        'products_with_other_category_removed' => (SWAPS_STRIP_OUT_CATEGORY_OTHER) ? "yes" : "no",
     ];
 
     $logMsg = "Swaps compute engine - Finished generating food consolidated JSON file for python swaps module.";
