@@ -20,6 +20,10 @@ WORKDIR /root/categorizer-module
 
 RUN pip3 install -r requirements.txt
 
+# install either wheels for trained models
+RUN pip3 install ./spacy/packages-full/en_textcat-2.0.0.tar.gz
+# RUN pip3 install ./spacy/packages-simple/en_textcat_simple-2.0.0.tar.gz
+
 # Add and install the swaps module
 COPY phe-swaps-module /root/phe-swaps-module
 WORKDIR /root/phe-swaps-module/phe_recommender
