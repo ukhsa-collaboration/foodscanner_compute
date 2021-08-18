@@ -1,4 +1,25 @@
+# Byte-compiled
+__pycache__/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+.ipynb_aml_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# Environments
+.venv
 .env
+
+# vscode project settings
+.vscode
+*.code-workspace
+.code-workspace
+debug.log
+
+
 src/vendor
 src/scripts/commands.sh
 .fuse*
