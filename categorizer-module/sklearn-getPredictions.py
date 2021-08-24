@@ -86,9 +86,9 @@ df = df[
 
 
 scriptPath = os.path.dirname(os.path.realpath(__file__))
-le = joblib.load(os.path.abspath(scriptPath + "/sklearn/models/LabelEncoder.pkl"))
+le = joblib.load(os.path.abspath(scriptPath + "/sklearn/models-full/LabelEncoder.pkl"))
 
-vc = joblib.load(os.path.abspath(scriptPath + "/sklearn/models/VotingClassifier.pkl"))
+vc = joblib.load(os.path.abspath(scriptPath + "/sklearn/models-full/VotingClassifier.pkl"))
 
 df["predict"] = le.inverse_transform(vc.predict(df))
 
