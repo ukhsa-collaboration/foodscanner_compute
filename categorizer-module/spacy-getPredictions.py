@@ -89,7 +89,8 @@ df["text"] = df.apply(
 
 scriptPath = os.path.dirname(os.path.realpath(__file__))
 
-nlp = spacy.load(os.path.abspath(scriptPath + "/spacy/training/model-best"))
+nlp = spacy.load('en_textcat')
+#nlp = spacy.load(os.path.abspath(scriptPath + "/spacy/training/model-best"))
 
 
 def predict(text):
