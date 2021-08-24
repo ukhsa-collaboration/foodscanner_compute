@@ -97,6 +97,10 @@ for k, v in df["predict"].items():
     new = dict()
     new["pvid"] = k
     new["category"] = v
+
+    if new['category'] == 'snacks':
+        new['category'] = 'snack'
+
     newArr.append(new)
 
 print(json.dumps(newArr))

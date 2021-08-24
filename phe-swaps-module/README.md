@@ -52,40 +52,44 @@ top_100_swaps(barcode, df) # returns df of 100 swaps including top 3 swaps
 
 ### Exceptions 
 
-Explain what these tests test and why
+There are various exceptions within the code. These test the following:
+- if the input barcode exists
+- if the input product has already a barcode
+- if the input product does have alternatives
+- if product does have enough swaps to build a top 3
 
+Barcode example
 ```
-Give an example
-```
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
+if barcode not in df.barcode.unique():
+    raise Exception("Sorry, barcode does not exist.")
 ```
 
-### And coding style tests
-
-Explain what these tests test and why
-
+Good choice badge example
 ```
-Give an example
+if (df[df["barcode"] == barcode]["badge_new"] == 1).all():
+    raise Exception("Item has a good choice badge. Great choice.")
 ```
 
-## Deployment
+No healthier alternatives example
+```
+if recom.empty:
+    raise Exception("Item does not have healthier alternatives.")
+```
 
-Add additional notes about how to deploy this on a live system
-
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+Top 3 swaps example
+```
+tries = 0
+idx = 0
+while len(new_df_pgc) < 3:
+    new_df_pgc = new_df_pgc.append(df_swaps.iloc[idx])
+    new_df_pgc.drop_duplicates(subset="product_name", inplace=True)
+    tries += 1
+    idx +=1
+    if tries >= 15:
+        raise Exception(
+            "Sorry, this product does not have enough swaps to build a top 3."
+        )
+```
 
 ## Versioning
 

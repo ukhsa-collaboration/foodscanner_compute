@@ -26,7 +26,6 @@ function main(string $filepath)
     $firstRow = true;
     fwrite($fileHandle, "[");
 
-
     if (getenv('ML_ALGORITHM') === false)
     {
         throw new ExceptionMissingRequiredEnvironmentVariable('ML_ALGORITHM');
@@ -55,8 +54,13 @@ function main(string $filepath)
         }
     }
 
+    $numProducts = 0;
+    $numProductsWithCategoryNone = 0;
+    $numProductsWithCategoryOther = 0;
+
     while (($foodConsolidatedRow = $foodConsolidatedTableResult->fetch_assoc()) !== null)
     {
+        $numProducts++;
         $barcode = $foodConsolidatedRow['barcode'];
 
         if (OVERRIDE_PHE_CAT_COLUMN)
@@ -90,6 +94,25 @@ function main(string $filepath)
             }
         }
 
+        if (in_array($foodConsolidatedRow['PHE_cat'], ["", "none", null]))
+        {
+            $numProductsWithCategoryNone++;
+
+            if (SWAPS_STRIP_OUT_CATEGORY_NONE)
+            {
+                continue;
+            }
+        }
+
+        if (strtolower($foodConsolidatedRow['PHE_cat']) === "other")
+        {
+            $numProductsWithCategoryOther++;
+
+            if (SWAPS_STRIP_OUT_CATEGORY_OTHER)
+            {
+                continue;
+            }
+        }
 
         $jsonForm = json_encode($foodConsolidatedRow, JSON_PRESERVE_ZERO_FRACTION); // using JSON_NUMERIC_CHECK will also try and change the barcode.
 
@@ -116,7 +139,16 @@ function main(string $filepath)
     fwrite($fileHandle, PHP_EOL . "]"); // end the JSON array list.
     fclose($fileHandle);
 
-    SiteSpecific::getLogger()->info("Swaps compute engine - Finished generating food consolidated JSON file for python swaps module.");
+    $context = [
+        'num_products_processed' => $numProducts,
+        'num_products_with_category_none' => $numProductsWithCategoryNone,
+        'num_products_with_category_other' => $numProductsWithCategoryOther,
+        'products_with_none_category_removed' => (SWAPS_STRIP_OUT_CATEGORY_NONE) ? "yes" : "no",
+        'products_with_other_category_removed' => (SWAPS_STRIP_OUT_CATEGORY_OTHER) ? "yes" : "no",
+    ];
+
+    $logMsg = "Swaps compute engine - Finished generating food consolidated JSON file for python swaps module.";
+    SiteSpecific::getLogger()->info($logMsg, $context);
 }
 
 

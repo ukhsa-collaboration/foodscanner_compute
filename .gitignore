@@ -13,14 +13,22 @@ ipython_config.py
 .venv
 .env
 
-# vscode project settings
+
+# IDE settings
+.idea
 .vscode
 *.code-workspace
 .code-workspace
+
+
+# Logs
+src/logs.csv
 debug.log
 
-
+# Packages
 src/vendor
+
+# Misc
 src/scripts/commands.sh
 .fuse*
 df_cache.pkl

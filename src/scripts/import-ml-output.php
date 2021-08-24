@@ -133,14 +133,59 @@ function getCategorizations(array $filepaths)
 {
     $categorizations = array();
 
-    foreach ($filepaths as $outputFile)
+    foreach ($filepaths as $outputFilepath)
     {
-        $dataArray = Safe\json_decode(file_get_contents($outputFile), true);
-
-        foreach ($dataArray as $row)
+        try
         {
-            $categorization = new Categorization($row);
-            $categorizations[$categorization->getBarcode()] = $categorization->getCategory();
+            $dataArray = Safe\json_decode(file_get_contents($outputFilepath), true);
+
+            foreach ($dataArray as $row)
+            {
+                $categorization = new Categorization($row);
+                $categorizations[$categorization->getBarcode()] = $categorization->getCategory();
+            }
+        }
+        catch (Safe\Exceptions\JsonException $ex)
+        {
+            $context = array(
+                'output_filepath' => $outputFilepath,
+                'output_contents' => file_get_contents($outputFilepath),
+            );
+
+            $outputFilename = basename($outputFilepath);
+            $inputFilepath = sys_get_temp_dir() . "/{$outputFilename}";
+
+            if (Programster\CoreLibs\StringLib::contains($outputFilepath, "sklearn"))
+            {
+                $errorOutputFilepath = SKLEARN_ERROR_OUTPUT_FOLDER . "/{$outputFilename}";
+            }
+            else
+            {
+                $errorOutputFilepath = SPACY_ERROR_OUTPUT_FOLDER . "/{$outputFilename}";
+            }
+
+
+            if (file_exists($inputFilepath))
+            {
+                $context['input_config'] = file_get_contents($inputFilepath);
+            }
+            else
+            {
+                $context['input_config_error'] = 'Could not find the input config file.';
+            }
+
+            if (file_exists($errorOutputFilepath))
+            {
+                $context['output_error_file_contents'] = file_get_contents($errorOutputFilepath);
+            }
+            else
+            {
+                $context['output_error_file_contents'] = 'Error file does not exist.';
+            }
+
+            SiteSpecific::getLogger()->error("There was an error decoding a machine-learning output JSON file.", $context);
+
+            // carry on with the loop as if nothing happened, might as well get the rest of the data.
         }
     }
 

@@ -64,47 +64,49 @@ function main()
     $algorithm = getenv('ML_ALGORITHM');
     $spacyOutputFolder = SPACY_OUTPUT_FOLDER;
     $sklearnOutputFolder = SKLEARN_OUTPUT_FOLDER;
+    $spacyErrorOutputFolder = SPACY_ERROR_OUTPUT_FOLDER;
+    $sklearnErrorOutputFolder = SKLEARN_ERROR_OUTPUT_FOLDER;
 
     // refresh the output folders in case there is remaining data from a previous run.
     Programster\CoreLibs\Filesystem::deleteDir($spacyOutputFolder);
     Programster\CoreLibs\Filesystem::deleteDir($sklearnOutputFolder);
     Programster\CoreLibs\Filesystem::mkdir($spacyOutputFolder);
     Programster\CoreLibs\Filesystem::mkdir($sklearnOutputFolder);
+    Programster\CoreLibs\Filesystem::mkdir($spacyErrorOutputFolder);
+    Programster\CoreLibs\Filesystem::mkdir($sklearnErrorOutputFolder);
 
-
-    foreach ($filenames as $filepath)
+    foreach ($filenames as $inputFilepath)
     {
+        // we do the following so that we can get back to the input config if there is an error importing the output results
+        $outputFilename = basename($inputFilepath);
+
         switch ($algorithm)
         {
             case 'spacy':
             {
                 $touchCommand = 'touch ' . PROGRESS_FOLDER . '/' . \Programster\CoreLibs\StringLib::generateRandomString(36, \Programster\CoreLibs\StringLib::PASSWORD_DISABLE_SPECIAL_CHARS);
-                $pythonCommand = "python3 /root/categorizer-module/spacy-getPredictions.py -p {$filepath}";
-                $outputFilename = \Programster\CoreLibs\StringLib::generateRandomString(36, \Programster\CoreLibs\StringLib::PASSWORD_DISABLE_SPECIAL_CHARS) . ".json";
-                $commands[] = "{$touchCommand} && {$pythonCommand} > {$spacyOutputFolder}/{$outputFilename} || true" . PHP_EOL;
+                $pythonCommand = "python3 /root/categorizer-module/spacy-getPredictions.py -p {$inputFilepath}";
+                $commands[] = "{$touchCommand} && {$pythonCommand} > {$spacyOutputFolder}/{$outputFilename} 2> {$spacyErrorOutputFolder}/{$outputFilename} || true" . PHP_EOL;
             }
             break;
 
             case 'sklearn':
             {
                 $touchCommand = 'touch ' . PROGRESS_FOLDER . '/' . \Programster\CoreLibs\StringLib::generateRandomString(36, \Programster\CoreLibs\StringLib::PASSWORD_DISABLE_SPECIAL_CHARS);
-                $pythonCommand = "python3 /root/categorizer-module/sklearn-getPredictions.py -p {$filepath}";
-                $outputFilename = \Programster\CoreLibs\StringLib::generateRandomString(36, \Programster\CoreLibs\StringLib::PASSWORD_DISABLE_SPECIAL_CHARS) . ".json";
-                $commands[] = "{$touchCommand} && {$pythonCommand} > {$sklearnOutputFolder}/{$outputFilename} || true" . PHP_EOL;
+                $pythonCommand = "python3 /root/categorizer-module/sklearn-getPredictions.py -p {$inputFilepath}";
+                $commands[] = "{$touchCommand} && {$pythonCommand} > {$sklearnOutputFolder}/{$outputFilename} 2> {$sklearnErrorOutputFolder}/{$outputFilename} || true" . PHP_EOL;
             }
             break;
 
             case 'both':
             {
                 $touchCommand = 'touch ' . PROGRESS_FOLDER . '/' . \Programster\CoreLibs\StringLib::generateRandomString(36, \Programster\CoreLibs\StringLib::PASSWORD_DISABLE_SPECIAL_CHARS);
-                $pythonCommand = "python3 /root/categorizer-module/sklearn-getPredictions.py -p {$filepath}";
-                $outputFilename = \Programster\CoreLibs\StringLib::generateRandomString(36, \Programster\CoreLibs\StringLib::PASSWORD_DISABLE_SPECIAL_CHARS) . ".json";
-                $commands[] = "{$touchCommand} && {$pythonCommand} > {$sklearnOutputFolder}/{$outputFilename} || true" . PHP_EOL;
+                $pythonCommand = "python3 /root/categorizer-module/sklearn-getPredictions.py -p {$inputFilepath}";
+                $commands[] = "{$touchCommand} && {$pythonCommand} > {$sklearnOutputFolder}/{$outputFilename} 2> {$sklearnErrorOutputFolder}/{$outputFilename} || true" . PHP_EOL;
 
                 $touchCommand = 'touch ' . PROGRESS_FOLDER . '/' . \Programster\CoreLibs\StringLib::generateRandomString(36, \Programster\CoreLibs\StringLib::PASSWORD_DISABLE_SPECIAL_CHARS);
-                $outputFilename = \Programster\CoreLibs\StringLib::generateRandomString(36, \Programster\CoreLibs\StringLib::PASSWORD_DISABLE_SPECIAL_CHARS) . ".json";
-                $pythonCommand = "python3 /root/categorizer-module/spacy-getPredictions.py -p {$filepath}";
-                $commands[] = "{$touchCommand} && {$pythonCommand} > {$spacyOutputFolder}/{$outputFilename} || true" . PHP_EOL;
+                $pythonCommand = "python3 /root/categorizer-module/spacy-getPredictions.py -p {$inputFilepath}";
+                $commands[] = "{$touchCommand} && {$pythonCommand} > {$spacyOutputFolder}/{$outputFilename} 2> {$spacyErrorOutputFolder}/{$outputFilename} || true" . PHP_EOL;
             }
             break;
 
