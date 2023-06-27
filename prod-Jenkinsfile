@@ -1,6 +1,6 @@
 String branchName = "master"
-String gitCredentials = "phe-jenkins-ssh"
-String repoUrl = "git@github.com:publichealthengland/foodscanner_compute.git"
+String gitCredentials = "foodscanner_compute"
+String repoUrl = "git@github.com:ukhsa-collaboration/foodscanner_compute.git"
 
 pipeline
 {
